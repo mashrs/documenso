@@ -1,8 +1,4 @@
-import {
-  isDisposableEmail,
-  isEmailDomainAllowedForSignup,
-  isSignupEnabledForProvider,
-} from '@documenso/lib/constants/auth';
+import { isDisposableEmail } from '@documenso/lib/constants/auth';
 import { EMAIL_VERIFICATION_STATE } from '@documenso/lib/constants/email';
 import { AppError } from '@documenso/lib/errors/app-error';
 import { jobsClient } from '@documenso/lib/jobs/client';
@@ -184,11 +180,12 @@ export const emailPasswordRoute = new Hono<HonoAuthContext>()
   .post('/signup', sValidator('json', ZSignUpSchema), async (c) => {
     const requestMetadata = c.get('requestMetadata');
 
-    if (!isSignupEnabledForProvider('email')) {
-      throw new AppError(AuthenticationErrorCode.SignupDisabled, {
-        statusCode: 400,
-      });
-    }
+    // RS Dex: bypass signup enablement and domain checks.
+    // if (!isSignupEnabledForProvider('email')) {
+    //   throw new AppError(AuthenticationErrorCode.SignupDisabled, {
+    //     statusCode: 400,
+    //   });
+    // }
 
     const { name, email, password, signature, captchaToken } = c.req.valid('json');
 
@@ -209,11 +206,11 @@ export const emailPasswordRoute = new Hono<HonoAuthContext>()
       ipAddress: requestMetadata.ipAddress,
     });
 
-    if (!isEmailDomainAllowedForSignup(email)) {
-      throw new AppError(AuthenticationErrorCode.SignupDisabled, {
-        statusCode: 400,
-      });
-    }
+    // if (!isEmailDomainAllowedForSignup(email)) {
+    //   throw new AppError(AuthenticationErrorCode.SignupDisabled, {
+    //     statusCode: 400,
+    //   });
+    // }
 
     const additionalBlockedDomains = await getEmailBlocklistDomains();
 
