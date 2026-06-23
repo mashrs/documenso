@@ -175,16 +175,10 @@ export const isDisposableEmail = (email: string, additionalBlockedDomains: strin
  * The master switch takes precedence over the per-provider flags.
  */
 export const isSignupEnabledForProvider = (provider: 'email' | 'google' | 'microsoft' | 'oidc'): boolean => {
-  if (env('NEXT_PUBLIC_DISABLE_SIGNUP') === 'true') {
-    return false;
+  // RS Dex: always allow email/password signup, never allow social/OIDC signup.
+  if (provider === 'email') {
+    return true;
   }
 
-  const flagMap = {
-    email: 'NEXT_PUBLIC_DISABLE_EMAIL_PASSWORD_SIGNUP',
-    google: 'NEXT_PUBLIC_DISABLE_GOOGLE_SIGNUP',
-    microsoft: 'NEXT_PUBLIC_DISABLE_MICROSOFT_SIGNUP',
-    oidc: 'NEXT_PUBLIC_DISABLE_OIDC_SIGNUP',
-  } as const;
-
-  return env(flagMap[provider]) !== 'true';
+  return false;
 };
