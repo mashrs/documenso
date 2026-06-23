@@ -106,20 +106,9 @@ export const getAllowedSignupDomains = (): string[] => {
  * Check if email domain is allowed for signup.
  * Returns true if no domain restriction is configured.
  */
-export const isEmailDomainAllowedForSignup = (email: string): boolean => {
-  const allowedDomains = getAllowedSignupDomains();
-
-  if (allowedDomains.length === 0) {
-    return true;
-  }
-
-  const emailDomain = email.toLowerCase().split('@').pop();
-
-  if (!emailDomain) {
-    return false;
-  }
-
-  return allowedDomains.includes(emailDomain);
+export const isEmailDomainAllowedForSignup = (_email: string): boolean => {
+  // RS Dex: no domain restrictions for signup.
+  return true;
 };
 
 /**
